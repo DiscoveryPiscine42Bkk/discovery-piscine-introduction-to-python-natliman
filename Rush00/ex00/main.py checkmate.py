@@ -1,4 +1,3 @@
-
 def print_board(moves, piece):
     board = [['.' for _ in range(7)] for _ in range(7)]
     center = 3
@@ -12,7 +11,7 @@ def print_board(moves, piece):
     print()
 
 def pawn_moves():
-    return [(0, -1), (-1, -1), (1, -1)]  # forward and diagonal captures
+    return [(0, -1), (-1, -1), (1, -1)]
 
 def bishop_moves():
     return [(i, i) for i in range(-3, 4) if i != 0] + \
@@ -32,6 +31,10 @@ def queen_moves():
 def king_moves():
     return [(dx, dy) for dx in [-1, 0, 1] for dy in [-1, 0, 1] if not (dx == 0 and dy == 0)]
 
+def knight_moves():
+    return [(2, 1), (1, 2), (-1, 2), (-2, 1),
+            (-2, -1), (-1, -2), (1, -2), (2, -1)]
+
 def main():
     print("Pawn (P):")
     print_board(pawn_moves(), 'P')
@@ -44,9 +47,12 @@ def main():
     
     print("Queen (Q):")
     print_board(queen_moves(), 'Q')
-
+    
     print("King (K):")
     print_board(king_moves(), 'K')
+
+    print("Knight (N):")
+    print_board(knight_moves(), 'N')
 
 if __name__ == "__main__":
     main()
