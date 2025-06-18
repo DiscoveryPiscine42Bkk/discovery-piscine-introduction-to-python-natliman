@@ -1,74 +1,52 @@
-def is_in_check(*rows):
-    try:
-        board = [list(row) for row in rows]
-        size = len(board)
 
-        # Validate square board
-        if any(len(row) != size for row in board):
-            print("Invalid board: Not a square")
-            return
+def print_board(moves, piece):
+    board = [['.' for _ in range(7)] for _ in range(7)]
+    center = 3
+    for dx, dy in moves:
+        x, y = center + dx, center + dy
+        if 0 <= x < 7 and 0 <= y < 7:
+            board[y][x] = 'X'
+    board[center][center] = piece
+    for row in board:
+        print(' '.join(row))
+    print()
 
-        # Find King's position
-        king_found = False
-        for i in range(size):
-            for j in range(size):
-                if board[i][j] == 'K':
-                    king_x, king_y = i, j
-                    king_found = True
-                    break
-            if king_found:
-                break
+def pawn_moves():
+    return [(0, -1), (-1, -1), (1, -1)]  # forward and diagonal captures
 
-        if not king_found:
-            print("Invalid board: King not found")
-            return
+def bishop_moves():
+    return [(i, i) for i in range(-3, 4) if i != 0] + \
+           [(i, -i) for i in range(-3, 4) if i != 0]
 
-        def in_bounds(x, y):
-            return 0 <= x < size and 0 <= y < size
+def rook_moves():
+    moves = []
+    for i in range(-3, 4):
+        if i != 0:
+            moves.append((0, i))
+            moves.append((i, 0))
+    return moves
 
-        # Check for Rooks and Queens (horizontal + vertical)
-        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-        for dx, dy in directions:
-            x, y = king_x + dx, king_y + dy
-            while in_bounds(x, y):
-                if board[x][y] != '.':
-                    if board[x][y] in 'RQ':
-                        print("Success")
-                        return
-                    break
-                x += dx
-                y += dy
+def queen_moves():
+    return bishop_moves() + rook_moves()
 
-        # Check for Bishops and Queens (diagonals)
-        diagonals = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
-        for dx, dy in diagonals:
-            x, y = king_x + dx, king_y + dy
-            while in_bounds(x, y):
-                if board[x][y] != '.':
-                    if board[x][y] in 'BQ':
-                        print("Success")
-                        return
-                    break
-                x += dx
-                y += dy
+def king_moves():
+    return [(dx, dy) for dx in [-1, 0, 1] for dy in [-1, 0, 1] if not (dx == 0 and dy == 0)]
 
-        # Check for Knights
-        knight_moves = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
-                        (1, -2), (1, 2), (2, -1), (2, 1)]
-        for dx, dy in knight_moves:
-            x, y = king_x + dx, king_y + dy
-            if in_bounds(x, y) and board[x][y] == 'N':
-                print("Success")
-                return
+def main():
+    print("Pawn (P):")
+    print_board(pawn_moves(), 'P')
+    
+    print("Bishop (B):")
+    print_board(bishop_moves(), 'B')
+    
+    print("Rook (R):")
+    print_board(rook_moves(), 'R')
+    
+    print("Queen (Q):")
+    print_board(queen_moves(), 'Q')
 
-        # Check for Pawns (assuming they attack downward)
-        for dx, dy in [(1, -1), (1, 1)]:
-            x, y = king_x + dx, king_y + dy
-            if in_bounds(x, y) and board[x][y] == 'P':
-                print("Success")
-                return
+    print("King (K):")
+    print_board(king_moves(), 'K')
 
-        print("Fail")
-
-    except Exception as e:
-        print("Error:", e)
+if __name__ == "__main__":
+    main()
