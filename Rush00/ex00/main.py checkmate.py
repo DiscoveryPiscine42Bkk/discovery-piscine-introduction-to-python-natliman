@@ -1,65 +1,58 @@
-def is_in_check(board):
-    # First, we need to find the position of the King (denoted by 'K').
-    king_position = None
-    n = len(board)  # The size of the board (assuming a square board)
+def print_board(moves, piece):
+    board = [['.' for _ in range(7)] for _ in range(7)]
+    center = 3
+    for dx, dy in moves:
+        x, y = center + dx, center + dy
+        if 0 <= x < 7 and 0 <= y < 7:
+            board[y][x] = 'X'
+    board[center][center] = piece
+    for row in board:
+        print(' '.join(row))
+    print()
+
+def pawn_moves():
+    return [(0, -1), (-1, -1), (1, -1)]
+
+def bishop_moves():
+    return [(i, i) for i in range(-3, 4) if i != 0] + \
+           [(i, -i) for i in range(-3, 4) if i != 0]
+
+def rook_moves():
+    moves = []
+    for i in range(-3, 4):
+        if i != 0:
+            moves.append((0, i))
+            moves.append((i, 0))
+    return moves
+
+def queen_moves():
+    return bishop_moves() + rook_moves()
+
+def king_moves():
+    return [(dx, dy) for dx in [-1, 0, 1] for dy in [-1, 0, 1] if not (dx == 0 and dy == 0)]
+
+def knight_moves():
+    return [(2, 1), (1, 2), (-1, 2), (-2, 1),
+            (-2, -1), (-1, -2), (1, -2), (2, -1)]
+
+def main():
+    print("Pawn (P):")
+    print_board(pawn_moves(), 'P')
     
-    for i in range(n):
-        for j in range(n):
-            if board[i][j] == 'K':
-                king_position = (i, j)
-                break
-        if king_position:
-            break
+    print("Bishop (B):")
+    print_board(bishop_moves(), 'B')
     
-    if not king_position:
-        # If we didn't find the King, return an error message.
-        return "Error: King not found"
-
-    kx, ky = king_position
-
-    # Directions for Rook and Queen (horizontal and vertical)
-    rook_directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-    # Directions for Bishop and Queen (diagonal)
-    bishop_directions = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
-    # Directions for Pawn (attacks diagonally)
-    pawn_directions = [(-1, -1), (-1, 1)]  # Attacking directions for White pawn
+    print("Rook (R):")
+    print_board(rook_moves(), 'R')
     
-    # Check for attacks from Rooks and Queens (vertical and horizontal)
-    for dx, dy in rook_directions:
-        x, y = kx + dx, ky + dy
-        while 0 <= x < n and 0 <= y < n:
-            if board[x][y] != '.':  # If we hit a piece
-                if board[x][y] == 'R' or board[x][y] == 'Q':
-                    return "Success"
-                break
-            x, y = x + dx, y + dy
+    print("Queen (Q):")
+    print_board(queen_moves(), 'Q')
+    
+    print("King (K):")
+    print_board(king_moves(), 'K')
 
-    # Check for attacks from Bishops and Queens (diagonal)
-    for dx, dy in bishop_directions:
-        x, y = kx + dx, ky + dy
-        while 0 <= x < n and 0 <= y < n:
-            if board[x][y] != '.':  # If we hit a piece
-                if board[x][y] == 'B' or board[x][y] == 'Q':
-                    return "Success"
-                break
-            x, y = x + dx, y + dy
+    print("Knight (N):")
+    print_board(knight_moves(), 'N')
 
-    # Check for attacks from Pawns (diagonal attacks)
-    for dx, dy in pawn_directions:
-        x, y = kx + dx, ky + dy
-        if 0 <= x < n and 0 <= y < n:
-            if board[x][y] == 'P':
-                return "Success"
-
-    return "Fail"
-board1 = [
-    ['.', '.', '.', '.', '.', '.', '.', '.'],
-    ['.', '.', '.', 'R', '.', '.', '.', '.'],
-    ['.', '.', '.', 'K', '.', '.', '.', '.'],
-    ['.', '.', '.', '.', '.', '.', '.', '.'],
-    ['.', '.', '.', '.', '.', '.', '.', '.'],
-    ['.', '.', '.', '.', '.', '.', '.', '.'],
-    ['.', '.', '.', '.', '.', '.', '.', '.'],
-    ['.', '.', '.', '.', '.', '.', '.', '.']
-]
-print(is_in_check(board1))
+if __name__ == "__main__":
+    main()
