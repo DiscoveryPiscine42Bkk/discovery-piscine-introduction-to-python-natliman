@@ -1,4 +1,8 @@
 import sys
 
-if len(sys.argv) == 1:
-    print("RTFM (Read the F-ing manual)")
+args = sys.argv[1:]
+
+if len (args) == 1:
+    print(args[0].upper())
+else:
+    print("none")
